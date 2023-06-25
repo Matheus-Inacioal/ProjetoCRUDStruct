@@ -95,7 +95,7 @@ int AdicionarUsuario(){
     
     srand(time(NULL));
     do{
-        id = rand() % 100000;
+        id = rand() % 1000;
 
         for(int i = 0; i < numUsuarios; i++)
         {
