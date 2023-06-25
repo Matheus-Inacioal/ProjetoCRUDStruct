@@ -89,7 +89,7 @@ int AdicionarUsuario(){
     double altura;
 
     if (numUsuarios >= MAX_USUARIOS){
-        printf("Numero de usuarios alcançou o limite D:\n");
+        printf("Numero de usuarios alcançou o limite \n");
         return -1;
     }
     
