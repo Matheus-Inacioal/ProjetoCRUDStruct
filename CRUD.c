@@ -7,6 +7,7 @@
 #define MAX_USUARIOS 1000
 
 int numUsuarios = 0;
+int numUsuariosBackup = 0;
 
 typedef struct tUsuario {
     int id;
@@ -19,7 +20,6 @@ typedef struct tUsuario {
 } Usuario;
 
 Usuario users[MAX_USUARIOS];
-
 Usuario usersBackup[MAX_USUARIOS];
 
 void AbrirMenu();
@@ -30,6 +30,7 @@ int BuscarPorEmail();
 int ImprimirUsuarios();
 int BackUp();
 int RestaurarDados();
+int CarregarUsuarios();
 
 int main() {
     char opcao = ' ';
@@ -61,6 +62,9 @@ int main() {
         case '7':
             RestaurarDados();
             break;
+        case '8':
+            CarregarUsuarios();
+            break;
         case '0':
             printf("--------Fechando programa--------\n");
             break;
@@ -79,6 +83,7 @@ void AbrirMenu(){
     printf("5 - Imprimir todos os usuarios\n");
     printf("6 - Fazer Backup dos usuarios\n");
     printf("7 - Restaurar os dados\n");
+    printf("8 - Carregar usuarios\n");
     printf("0 - Fechar programa\n");
     printf("Digite a opcao escolhida: ");
 }
@@ -179,6 +184,7 @@ int AdicionarUsuario(){
     return 0;
 }
 
+
 int EditarUsuario() {
     char email[100];
     int opcao;
@@ -252,8 +258,6 @@ int EditarUsuario() {
     printf("Usuario nao encontrado\n");
     return 0;
 }
-
-
 
 int ExcluirUsuario(){
     char email[100];
@@ -333,7 +337,7 @@ int BuscarPorEmail(){
 }
 
 int ImprimirUsuarios(){
-    for(int i = 0; i < numUsuarios; i++){
+     for(int i = 0; i < numUsuarios; i++){
         printf("\n----------USUARIO %d----------\n", i+1);
         printf("id:  %d\n", users[i].id);
         printf("nome: %s\n", users[i].nomeCompleto);
@@ -346,63 +350,35 @@ int ImprimirUsuarios(){
 }
 
 int BackUp(){
-    int certeza;
+    // Faz uma cópia dos usuários atuais para o backup
+    memcpy(usersBackup, users, sizeof(users));
+    numUsuariosBackup = numUsuarios;
 
-    printf("tem certeza que deseja fazer backup?\n1 - sim 0 - nao\n");
-    scanf("%d", &certeza);
-
-    if(certeza == 1){
-        for(int i = 0; i < numUsuarios; i++){
-            usersBackup[i].id = users[i].id;
-            strcpy(usersBackup[i].nomeCompleto, users[i].nomeCompleto);
-            strcpy(usersBackup[i].email, users[i].email);
-            strcpy(usersBackup[i].sexo, users[i].sexo);
-            strcpy(usersBackup[i].endereco, users[i].endereco);
-            usersBackup[i].altura = users[i].altura;
-            usersBackup[i].vacina = users[i].vacina;
-        }
-        
-        printf("BackUp concluido com sucesso\n");
-       
-        return 0;
-    }
-    else if(certeza == 0){
-        printf("BackUp cancelado\n");
-        return 0;
-    }
-    else {
-        printf("Opcao invalida\n");
-        return -1;
-    }
+    printf("Backup realizado com sucesso!\n");
+    return 0;
 }
 
 int RestaurarDados(){
-    int certeza;
+    // Restaura os usuários a partir do backup
+    memcpy(users, usersBackup, sizeof(users));
+    numUsuarios = numUsuariosBackup;
 
-    printf("tem certeza que deseja restaurar dados?\n1 - sim 0 - nao\n");
-    scanf("%d", &certeza);
+    printf("Dados restaurados com sucesso!\n");
+    return 0;
+}
 
-    if(certeza == 1){
-        for(int i = 0; i < numUsuarios; i++){
-            users[i].id = usersBackup[i].id;
-            strcpy(users[i].nomeCompleto, usersBackup[i].nomeCompleto);
-            strcpy(users[i].email, usersBackup[i].email);
-            strcpy(users[i].sexo, usersBackup[i].sexo);
-            strcpy(users[i].endereco, usersBackup[i].endereco);
-            users[i].altura = usersBackup[i].altura;
-            users[i].vacina = usersBackup[i].vacina;
-        }
-        
-        printf("Restauracao concluido com sucesso\n");
-       
-        return 0;
-    }
-    else if(certeza == 0){
-        printf("Restauracao cancelada\n");
-        return 0;
-    }
-    else {
-        printf("Opcao invalida\n");
-        return -1;
-    }
+int CarregarUsuarios() {
+    Usuario usuariosCarregados[MAX_USUARIOS];
+    int numUsuariosCarregados = 0;
+
+    // Copiar os usuários do vetor de backup para o vetor de usuários carregados
+    memcpy(usuariosCarregados, usersBackup, sizeof(usersBackup));
+    numUsuariosCarregados = numUsuariosBackup;
+
+    // Copiar os usuários carregados para o vetor principal de usuários
+    memcpy(users, usuariosCarregados, sizeof(users));
+    numUsuarios = numUsuariosCarregados;
+
+    printf("Usuarios carregados com sucesso!\n");
+    return 0;
 }
